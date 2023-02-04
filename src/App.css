@@ -10,3 +10,9 @@ body,
 #app {
   height: 100vh;
 }
+
+button:disabled {
+  opacity: 0.4;
+  background-color: red;
+  height: 40px;
+}

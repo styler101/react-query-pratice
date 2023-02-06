@@ -10,6 +10,8 @@ export function PostList2(props){
   const posts2Query = useQuery({
     queryKey:['posts', postId],
     queryFn: () => fetch(`${baseUrl}/posts?userId=${postId}`).then((response) => response.json()),
+    // podemos passar uma condição para que essa 
+    enabled:true,
     // Podemos passar um delimitador para as requisições.
     staleTime:  1000  * 60 * 1,
     // podemos fazer um refetch das informações,

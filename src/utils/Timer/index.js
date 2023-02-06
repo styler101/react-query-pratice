@@ -1,3 +1,3 @@
-export function delay(timer = 1000) {
-  return new Promise((reject) => setTimeout(reject, timer));
+export function wait(duration = 1000) {
+  return new Promise((resolve) => setTimeout(resolve, duration));
 }

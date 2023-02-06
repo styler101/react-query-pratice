@@ -1,6 +1,6 @@
 import React from "react";
-import { useQuery, useMutation, isError, useQueryClient } from 'react-query'
-import { delay } from './utils/Timer'
+import { useQuery, useMutation, useQueryClient }from 'react-query'
+import { wait } from './utils/Timer'
 import './App.css'
 
 const posts = [
@@ -9,37 +9,55 @@ const posts = [
 ]
 
 // query -> you get data from the query
-// mutation -> set data 
+// mutation -> change Data 
+// formas de se salvar chaves com o react-query
+// /posts -> ["posts"]
+// /posts/1 -> ["posts", post.id],
+// /posts?authorid=1 -> ["posts", { authorId: 1}]
+// /posts/2/comments -> ["posts", post.id , "comments"]
+
 export function App() {
- const queryClient = useQueryClient();
- const postsQuery = useQuery({
-    queryKey: ['posts'], // unique identifier
-    queryFn: () => delay(1000).then(() => [...posts]  )}
-  )
+ 
+  const queryClient = useQueryClient();
 
- const newPostsMutation = useMutation({
-  mutationFn:() => delay(1000).then(() =>  posts.push({ id: Math.random(), title:`POST ${posts.length + 1}`})),
-  onSuccess: () => {
-    queryClient.invalidateQueries(['posts'])
-  }
- })
-  if(postsQuery.isLoading) return  <h1> Loading...</h1>
-  if(postsQuery.isError) return <h1> Ocorreu um erro no sistema.</h1>
+  const newPostsMutation = useMutation({
+    // essa função será responsável por alterar as informãções do nossos posts
+     mutationFn: () =>  wait(1000).then(() =>{
+      return posts.push({ id: Math.random(), title: 'New Post'})
+    }),
+    // Ira invalidar o nossa chave do posts e ira alterar as mesmas.
+    onSuccess: () =>{
+      queryClient.invalidateQueries(['posts'])
+    }
 
-  console.log(postsQuery.data)
+
+  })
+
+  const postsQuery = useQuery({
+    queryKey: ['posts'],
+    queryFn: () =>  wait(1000).then(() => posts)
+  })
+  
+  console.log(postsQuery);
+
+  if(postsQuery.isLoading )  return <h1> Carregando as informações...</h1>
+  if(postsQuery.isError) return <h1> Ocorreu um erro ao processar a requisição.</h1>
+  
+
+
   return (
   <React.Fragment>
-    <button  disabled={newPostsMutation.isLoading}onClick={() => newPostsMutation.mutate('New Post')}> Add New Post</button>
-    
-  {postsQuery.data.map((item) => (
-   <React.Fragment key={item.id}>
-    <div>
-     <span> name: {item.title}</span>
-     <strong> Id: {item.id}</strong>
-    </div>
-   </React.Fragment>
-  ))}
-  </React.Fragment>  
+      <button  disabled={newPostsMutation.isLoading} onClick={() => newPostsMutation.mutate('New Post')}> Add New Post</button>
+       {postsQuery.data.map((item) => (
+        <React.Fragment key={item.id}>
+          <div style={{display: 'block'}}> 
+           <strong>  ID: <span> {item.id} </span></strong>
+           <strong>  Name: <span> {item.title} </span></strong>
+          </div>
+        </React.Fragment>
+       ))}
+ 
+  </React.Fragment>
   )
 }
 

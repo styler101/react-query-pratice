@@ -11,6 +11,12 @@ body,
   height: 100vh;
 }
 
+button {
+  height: 30px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+}
 button:disabled {
   opacity: 0.4;
   background-color: red;

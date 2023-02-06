@@ -1,16 +1,31 @@
 import React from 'react';
+import { useQuery } from 'react-query'
+import { Loading } from '../Loading'
+import { baseUrl } from '../../services'
 import '../styles.css'
 
-export function PostList1(){
+export function PostList1(props){
+  const { postId } = props;
+
+  const postQuery1 = useQuery({
+    queryKey:['posts', postId],
+    queryFn: () => fetch(`${baseUrl}/posts?=${postId}`).then((response) => response.json())
+  })
+
+  console.log(postQuery1.data)
+  
+ 
+  if(postQuery1.isLoading) return <Loading/>
   return(
     <div className='container'>
       <h1> Post List 1 </h1>
       <ul>
-        <li> Lorem  Ipsum 1 is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum </li>
-        <li> Lorem Ipsum 2  is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum </li>
-
-
-        <li> Lorem Ipsum 2  is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum </li>
+        {postQuery1.data.map((item) => (
+          <React.Fragment key={item.id}>
+            <strong> Title: {item.title}</strong>
+            <p> {item.body}</p>
+          </React.Fragment>
+        ))}    
       </ul>
     </div>
   )

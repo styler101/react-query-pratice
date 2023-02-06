@@ -9,7 +9,12 @@ export function PostList2(props){
 
   const posts2Query = useQuery({
     queryKey:['posts', postId],
-   queryFn: () => fetch(`${baseUrl}/posts?=${postId}`).then((response) => response.json())
+    queryFn: () => fetch(`${baseUrl}/posts?userId=${postId}`).then((response) => response.json()),
+    // Podemos passar um delimitador para as requisições.
+    staleTime:  1000  * 60 * 1,
+    // podemos fazer um refetch das informações,
+    refetchInterval: 1000
+    
   })
 
   if(posts2Query.isLoading) return <Loading/>

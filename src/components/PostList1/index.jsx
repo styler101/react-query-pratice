@@ -9,7 +9,7 @@ export function PostList1(props){
 
   const postQuery1 = useQuery({
     queryKey:['posts', postId],
-    queryFn: () => fetch(`${baseUrl}/posts?=${postId}`).then((response) => response.json())
+    queryFn: () => fetch(`${baseUrl}/posts?userId=${postId}`).then((response) => response.json())
   })
 
   console.log(postQuery1.data)
